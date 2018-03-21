@@ -1,0 +1,9 @@
+# ignore venv
+.venv
+
+# ignore cache and pyc
+__pycache__
+*.pyc
+
+# ignore eggs
+*.egg*
