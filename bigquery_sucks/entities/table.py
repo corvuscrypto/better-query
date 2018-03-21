@@ -15,7 +15,7 @@ class TableResource(BaseResource):
         }
         response = self.client.get(url, params).json()
         tables = []
-        for table_data in response['tables']:
+        for table_data in response.get('tables', []):
             tables.append(Table(self.client, table_data['tableReference']))
         return tables
 
@@ -32,7 +32,7 @@ class DatasetTableResource(BaseResource):
         }
         response = self.client.get(self.base_url + "/tables", params).json()
         tables = []
-        for table_data in response['tables']:
+        for table_data in response.get('tables', []):
             tables.append(Table(self.client, table_data['tableReference']))
         return tables
 
@@ -64,6 +64,6 @@ class Table(LazyLoadedModel):
         table_data = self.client.get(self.url).json()
         self.creation_time = table_data['creationTime']
         self.last_modified_time = table_data['lastModifiedTime']
-        self.num_bytes = table_data['numBytes']
-        self.num_long_term_bytes = table_data['numLongTermBytes']
-        self.num_rows = table_data['numRows']
+        self.num_bytes = int(table_data['numBytes'])
+        self.num_long_term_bytes = int(table_data['numLongTermBytes'])
+        self.num_rows = int(table_data['numRows'])

@@ -6,6 +6,7 @@ import json
 import urllib3
 from google.auth.transport.requests import AuthorizedSession
 from google.oauth2.credentials import Credentials
+from bigquery_sucks.entities.projects import ProjectResource
 
 
 class Client():
@@ -15,6 +16,7 @@ class Client():
         del auth_dict['type']
         credentials = Credentials(None, token_uri="https://accounts.google.com/o/oauth2/token", **auth_dict)
         self._transport = AuthorizedSession(credentials)
+        self.projects = ProjectResource(self)
 
     @staticmethod
     def from_credentials_file(filename):

@@ -19,8 +19,7 @@ class ProjectResource(BaseResource):
         projects = []
         for project_data in response['projects']:
             projects.append(Project(self.client, project_data))
-        response['projects'] = projects
-        return response
+        return projects
 
 
 class Project(object):
