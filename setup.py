@@ -7,5 +7,5 @@ setup(
     description='Maybe a better client? Maybe not. Either way BigQuery sucks',
     author='Clifford Richardson',
     author_email='cmrallen@gmail.com',
-    install_requires=["google-auth==1.4.1"],
+    install_requires=["requests==2.18.4", "google-auth==1.4.1"],
 )
