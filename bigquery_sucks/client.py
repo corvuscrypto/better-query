@@ -34,4 +34,4 @@ class Client():
         return self._transport.request(method="GET", url=url)
 
     def post(self, url, data=None):
-        return self._transport.request(method="POST", url=url, data=data)
+        return self._transport.request(method="POST", url=url, data=json.dumps(data), headers={"Content-Type": "application/json"})
