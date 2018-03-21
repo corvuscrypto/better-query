@@ -3,6 +3,7 @@ Class and model for Datasets yo
 """
 from bigquery_sucks.entities.base import BaseResource
 from bigquery_sucks.entities.base import LazyLoadedModel
+from bigquery_sucks.entities.table import DatasetTableResource
 
 
 class DatasetResource(BaseResource):
@@ -16,7 +17,11 @@ class DatasetResource(BaseResource):
             "maxResults": max_results,
             "pageToken": page_token
         }
-        self.client.get(url, params)
+        response = self.client.get(url, params)
+        datasets = []
+        for dataset_data in response['datasets']:
+            datasets.append(Dataset(self.client, dataset_data['datasetReference']))
+        return datasets
 
 
 class ProjectDatasetResource(BaseResource):
@@ -35,8 +40,7 @@ class ProjectDatasetResource(BaseResource):
         datasets = []
         for dataset_data in response['datasets']:
             datasets.append(Dataset(self.client, dataset_data['datasetReference']))
-        response['datasets'] = datasets
-        return response
+        return datasets
 
 
 class Dataset(LazyLoadedModel):
@@ -53,6 +57,7 @@ class Dataset(LazyLoadedModel):
         super(Dataset, self).__init__(client)
         self.project_id = dataset_data['projectId']
         self.id = dataset_data['datasetId']
+        self.tables = DatasetTableResource(client, self.project_id, self.id)
         self.url = self.url_template.format(
             dataset_id=self.id,
             project_id=self.project_id
