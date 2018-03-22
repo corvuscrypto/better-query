@@ -3,6 +3,7 @@ Base client for the API. This builds on top of the AuthorizedSession
 class just to make things a bit easier.
 """
 import json
+import copy
 import urllib3
 from google.auth.transport.requests import AuthorizedSession
 from google.oauth2.credentials import Credentials
@@ -13,7 +14,8 @@ class Client():
     def __init__(self, auth_dict=None):
         if not auth_dict:
             raise ValueError("requires authentication")
-        del auth_dict['type']
+        auth_dict.pop('type', None)
+        self.auth_dict = copy.copy(auth_dict)
         credentials = Credentials(None, token_uri="https://accounts.google.com/o/oauth2/token", **auth_dict)
         self._transport = AuthorizedSession(credentials)
         self.projects = ProjectResource(self)
@@ -35,3 +37,6 @@ class Client():
 
     def post(self, url, data=None):
         return self._transport.request(method="POST", url=url, data=json.dumps(data), headers={"Content-Type": "application/json"})
+
+    def copy(self):
+        return Client(self.auth_dict)
